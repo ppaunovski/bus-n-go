@@ -11,7 +11,10 @@ data class KorisnikRole(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long,
     @ManyToOne
-    val korisnik: Korisnik,
+    val korisnik: Korisnik?,
     @ManyToOne
-    val role: Role,
-)
+    val role: Role?,
+) {
+    constructor() : this(0, null, null) {
+    }
+}

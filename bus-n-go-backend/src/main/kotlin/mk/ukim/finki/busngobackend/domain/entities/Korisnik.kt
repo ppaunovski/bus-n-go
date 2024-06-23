@@ -17,9 +17,12 @@ class Korisnik(
     var admin: Boolean,
     var lozinka: String,
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "korisnik")
-    var roles: List<KorisnikRole>,
+    var roles: List<KorisnikRole>?,
 ) : UserDetails {
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = roles.map { it.role }.toMutableList()
+    constructor() : this(0, "", "", "", "", false, "", emptyList()) {
+    }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = roles?.map { it.role!! }?.toMutableList() ?: mutableListOf()
 
     override fun getPassword(): String = lozinka
 
