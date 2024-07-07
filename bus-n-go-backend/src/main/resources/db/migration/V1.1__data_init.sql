@@ -96,17 +96,17 @@ INSERT INTO Avtobus (broj_sedishta, registracija, seriski_broj) VALUES
                                                                     (50, 'SK-9012-ST', 'SN-000019'),
                                                                     (45, 'SK-0123-TU', 'SN-000020');
 
-INSERT INTO Linija (ime, pravec) VALUES
-                                     ('Line 1', 'Aerodrom - Gjorche'),
-                                     ('Line 2', 'Vodno - Chair'),
-                                     ('Line 3', 'Ilinden - Centar'),
-                                     ('Line 4', 'Skopje - Kumanovo'),
-                                     ('Line 5', 'Skopje - Strumica'),
-                                     ('Line 6', 'Skopje - Strumica'),
-                                     ('Line 7', 'Skopje - Strumica'),
-                                     ('Line 8', 'Skopje - Strumica'),
-                                     ('Line 9', 'Skopje - Strumica'),
-                                     ('Line 10', 'Skopje - Strumica');
+INSERT INTO Linija (ime) VALUES
+                                     ('Line 1'),
+                                     ('Line 2'),
+                                     ('Line 3'),
+                                     ('Line 4'),
+                                     ('Line 5'),
+                                     ('Line 6'),
+                                     ('Line 7'),
+                                     ('Line 8'),
+                                     ('Line 9'),
+                                     ('Line 10');
 
 INSERT INTO Pravec (pravec, opis) VALUES
                                       ('Skopje - Tetovo', 'Skopje to Tetovo'),
@@ -227,30 +227,30 @@ INSERT INTO Postojka (lat, lon, ime, opis) VALUES
                                                (41.9822, 21.4679, 'Skopje City Mall', 'Shopping mall in Skopje');
 
 -- Insert stops for Line 1 (Skopje - Tetovo)
-INSERT INTO Postojka_Na_Linija (linija_id, postojka_id, reden_broj) VALUES
-                                                                        (1, 1, 1),   -- Skopje
-                                                                        (1, 2, 2),   -- Gazi Baba
-                                                                        (1, 8, 3),   -- Skopje University
-                                                                        (1, 7, 4),   -- Kapishtec
-                                                                        (1, 3, 5),   -- Tetovo
-                                                                        (1, 6, 6),   -- Gostivar Train Station
-                                                                        (1, 5, 7),   -- Gostivar
-                                                                        (1, 4, 8),   -- Zelino
-                                                                        (1, 9, 9),   -- Tetovo Bus Station
-                                                                        (1, 10, 10); -- Butel
+INSERT INTO Postojka_Na_Linija (linija_id, postojka_id, reden_broj, pravec_id) VALUES
+                                                                        (1, 1, 1, 1),   -- Skopje
+                                                                        (1, 2, 2, 1),   -- Gazi Baba
+                                                                        (1, 8, 3, 1),   -- Skopje University
+                                                                        (1, 7, 4, 1),   -- Kapishtec
+                                                                        (1, 3, 5, 1),   -- Tetovo
+                                                                        (1, 6, 6, 1),   -- Gostivar Train Station
+                                                                        (1, 5, 7, 1),   -- Gostivar
+                                                                        (1, 4, 8, 1),   -- Zelino
+                                                                        (1, 9, 9, 1),   -- Tetovo Bus Station
+                                                                        (1, 10, 10, 1); -- Butel
 
 -- Insert stops for Line 1 (Tetovo to Skopje)
-INSERT INTO Postojka_Na_Linija (linija_id, postojka_id, reden_broj) VALUES
-                                                                        (1, 10, 1),   -- Butel
-                                                                        (1, 9, 2),    -- Tetovo Bus Station
-                                                                        (1, 4, 3),    -- Zelino
-                                                                        (1, 5, 4),    -- Gostivar
-                                                                        (1, 6, 5),    -- Gostivar Train Station
-                                                                        (1, 3, 6),    -- Tetovo
-                                                                        (1, 7, 7),    -- Kapishtec
-                                                                        (1, 8, 8),    -- Skopje University
-                                                                        (1, 2, 9),    -- Gazi Baba
-                                                                        (1, 1, 10);   -- Skopje
+INSERT INTO Postojka_Na_Linija (linija_id, postojka_id, reden_broj, pravec_id) VALUES
+                                                                        (1, 10, 1, 2),   -- Butel
+                                                                        (1, 9, 2, 2),    -- Tetovo Bus Station
+                                                                        (1, 4, 3, 2),    -- Zelino
+                                                                        (1, 5, 4, 2),    -- Gostivar
+                                                                        (1, 6, 5, 2),    -- Gostivar Train Station
+                                                                        (1, 3, 6, 2),    -- Tetovo
+                                                                        (1, 7, 7, 2),    -- Kapishtec
+                                                                        (1, 8, 8, 2),    -- Skopje University
+                                                                        (1, 2, 9, 2),    -- Gazi Baba
+                                                                        (1, 1, 10, 2);   -- Skopje
 
 
 -- Insert ticket types

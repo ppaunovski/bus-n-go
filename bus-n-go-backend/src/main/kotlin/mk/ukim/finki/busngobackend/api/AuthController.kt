@@ -23,4 +23,7 @@ class AuthController(
     fun authenticate(
         @RequestBody authRequest: AuthRequest,
     ): AuthResponse = authService.authenticate(authRequest)
+
+    @GetMapping("/is-driver-free")
+    fun isDriverFree() = this.authService.isDriverFree()
 }

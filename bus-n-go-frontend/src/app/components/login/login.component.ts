@@ -17,7 +17,6 @@ import {AuthService} from "../../services/auth/auth.service";
   standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
 })
 export class LoginComponent {
   email: string | undefined;
@@ -41,6 +40,7 @@ export class LoginComponent {
           console.log(result)
           this.service.refreshAuth$.next(true);
           sessionStorage.setItem('jwt', result.token);
+          this.router.navigate(['/'])
         }
       })
     }

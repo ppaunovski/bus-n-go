@@ -10,5 +10,4 @@ data class Linija(
     @GeneratedValue(strategy = GenerationType.IDENTITY) @Id
     var id: Int,
     var ime: String,
-    var pravec: String,
 )

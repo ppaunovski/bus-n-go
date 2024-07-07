@@ -23,12 +23,12 @@ class JwtAuthFilter(
     ) {
         val authHeader: String? = request.getHeader("Authorization")
 
-        if (authHeader.doesNotContainBearer()) {
+        if (authHeader == null || authHeader.doesNotContainBearer()) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val jwt = authHeader!!.extractTokenValue()
+        val jwt = authHeader.extractTokenValue()
         val email = jwtService.extractUsername(jwt)
 
         if (email != null && SecurityContextHolder.getContext().authentication == null) {

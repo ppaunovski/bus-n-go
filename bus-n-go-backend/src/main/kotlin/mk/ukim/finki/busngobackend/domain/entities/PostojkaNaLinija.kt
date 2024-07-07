@@ -15,4 +15,6 @@ data class PostojkaNaLinija(
     val linija: Linija,
     @ManyToOne
     val postojka: Postojka,
+    @ManyToOne
+    val pravec: Pravec,
 )

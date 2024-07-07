@@ -114,8 +114,7 @@ create table Avtobus(
 
 create table Linija(
                        id serial primary key,
-                       ime character varying(255),
-                       pravec character varying(255)
+                       ime character varying(255)
 );
 
 create table Pravec (
@@ -134,6 +133,7 @@ create table linija_pravec (
 
 create table Instanca_Na_Linija (
                                   linija_id integer,
+                                  pravec_id bigint,
                                   avtobus_id bigint,
                                   end_date timestamp(6) without time zone,
                                   id bigserial primary key,
@@ -167,6 +167,7 @@ create table Postojka (
 create table Postojka_Na_Linija (
                                   linija_id integer,
                                   postojka_id integer,
+                                  pravec_id bigint,
                                   reden_broj smallint,
                                   id bigserial primary key,
                                   foreign key (postojka_id) references postojka (id),
@@ -186,6 +187,7 @@ create table TipBilet (
 
 create table Bilet (
                        datum_kupuvanje timestamp(6) without time zone,
+                       datum_aktivacija timestamp(6) without time zone,
                        id bigserial primary key,
                        patnik_id bigint,
                        tip_id bigint,

@@ -1,16 +1,21 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
-import {Router} from "@angular/router";
-import {switchMap, tap} from "rxjs";
+import {Router, RouterLink} from "@angular/router";
+import {switchMap} from "rxjs";
+import {UserResponse} from "../../model/responses/UserResponse";
+import {UserService} from "../../services/user/user.service";
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [],
+  imports: [
+    RouterLink, MatButtonModule, MatMenuModule
+  ],
   templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.css'
 })
-export class NavigationComponent implements OnInit{
+export class NavigationComponent implements OnInit {
 
   constructor(
     private _authService: AuthService,
@@ -18,14 +23,21 @@ export class NavigationComponent implements OnInit{
     private _userService: UserService,
   ) {
   }
-  private _user: UserResponse | undefined
+
+  user: UserResponse | undefined
 
   ngOnInit(): void {
     this._authService.refreshAuth$.pipe(
       switchMap(auth => this._userService.getUser())
     ).subscribe({
       next: user => {
-        this._user = user
+        this.user = user
+      }
+    })
+
+    this._userService.getUser().subscribe({
+      next: user => {
+        this.user = user
       }
     })
   }
@@ -43,4 +55,8 @@ export class NavigationComponent implements OnInit{
     this.isIconMenuOpen = !this.isIconMenuOpen;
   }
 
+  signOut() {
+    sessionStorage.clear()
+    this._authService.refreshAuth$.next(false)
+  }
 }

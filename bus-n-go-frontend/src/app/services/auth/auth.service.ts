@@ -34,8 +34,12 @@ export class AuthService {
     )
   }
 
-  isAuthenticated(): Observable<Boolean> {
-    return this.http.get<Boolean>(`${this.url}`);
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.url}`);
+  }
+
+  isDriverFree(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.url}/is-driver-free`);
   }
 
 }

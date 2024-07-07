@@ -1,9 +1,10 @@
 package mk.ukim.finki.busngobackend.domain.enums
 
 enum class RoleEnum {
-    ROLE_USER,
-    ROLE_PASSENGER,
+    ROLE_ADMIN,
     ROLE_DRIVER,
     ROLE_CONDUCTOR,
-    ROLE_ADMIN,
+    ROLE_PASSENGER,
 }
+
+fun RoleEnum.toId(): Long = this.ordinal + 1L

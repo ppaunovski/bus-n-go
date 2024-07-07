@@ -15,4 +15,6 @@ data class InstancaNaLinija(
     var avtobus: Avtobus,
     @ManyToOne
     var linija: Linija,
+    @ManyToOne
+    var pravec: Pravec,
 )

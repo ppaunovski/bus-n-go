@@ -6,12 +6,15 @@ import mk.ukim.finki.busngobackend.api.responses.AuthResponse
 import mk.ukim.finki.busngobackend.config.JwtService
 import mk.ukim.finki.busngobackend.domain.entities.Korisnik
 import mk.ukim.finki.busngobackend.domain.entities.KorisnikRole
-import mk.ukim.finki.busngobackend.repository.KorisnikRepository
-import mk.ukim.finki.busngobackend.repository.KorisnikRoleRepository
-import mk.ukim.finki.busngobackend.repository.RoleRepository
+import mk.ukim.finki.busngobackend.domain.enums.RoleEnum
+import mk.ukim.finki.busngobackend.domain.enums.toId
+import mk.ukim.finki.busngobackend.repository.*
+import mk.ukim.finki.busngobackend.service.exceptions.NotFoundException
 import mk.ukim.finki.busngobackend.service.exceptions.UnauthorizedAccessException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -25,8 +28,16 @@ class AuthService(
     private val korisnikRepository: KorisnikRepository,
     private val korisnikRoleRepository: KorisnikRoleRepository,
     private val roleRepository: RoleRepository,
+    private val instancaNaLinijaRepository: InstancaNaLinijaRepository,
+    private val vrabotenRepository: VrabotenRepository,
+    private val vozacRepository: VozacRepository,
 ) {
     fun getSecurityContext(): SecurityContext = SecurityContextHolder.getContext()
+
+    fun getAuthenticatedUser(): Korisnik = userDetailsService.loadUserByUsername(getSecurityContext().authentication.name) as Korisnik
+
+    fun hasAuthority(authority: RoleEnum): Boolean =
+        getAuthenticatedUser().authorities.contains(roleRepository.findByIdOrNull(authority.toId()) as GrantedAuthority)
 
     fun isAuthenticated(): Boolean {
         if (getSecurityContext().authentication == null) {
@@ -90,5 +101,14 @@ class AuthService(
         val token = jwtService.generateToken(userDetails = user)
 
         return AuthResponse(token)
+    }
+
+    fun isDriverFree(): Boolean {
+        if (!this.hasAuthority(RoleEnum.ROLE_DRIVER)) throw UnauthorizedAccessException("User is not authorized")
+        val korisnik = this.userDetailsService.loadUserByUsername(this.getSecurityContext().authentication.name) as Korisnik
+        val vraboten = this.vrabotenRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Vraboten not found")
+        val vozac = this.vozacRepository.findByVraboten(vraboten) ?: throw NotFoundException("Vozac not found")
+
+        return this.instancaNaLinijaRepository.existsByVozacAndEndDateIsNull(vozac.id)
     }
 }

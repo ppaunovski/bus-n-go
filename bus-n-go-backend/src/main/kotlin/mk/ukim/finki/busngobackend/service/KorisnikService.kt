@@ -1,6 +1,7 @@
 package mk.ukim.finki.busngobackend.service
 
 import mk.ukim.finki.busngobackend.api.responses.UserResponse
+import mk.ukim.finki.busngobackend.domain.entities.Korisnik
 import mk.ukim.finki.busngobackend.mapper.ClassToDtoMapper
 import mk.ukim.finki.busngobackend.repository.KorisnikRepository
 import mk.ukim.finki.busngobackend.service.exceptions.UnauthorizedAccessException
@@ -20,4 +21,9 @@ class KorisnikService(
 
         return user?.let { mapper.toUserResponse(it) } ?: throw UnauthorizedAccessException("Unauthorized access")
     }
+
+    fun getUser(): Korisnik =
+        authService.getSecurityContext().authentication?.let { auth ->
+            korisnikRepository.findByEmail(auth.name)
+        } ?: throw UnauthorizedAccessException("Unauthorized access")
 }
