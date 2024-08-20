@@ -1,5 +1,6 @@
 package mk.ukim.finki.busngobackend.service
 
+import mk.ukim.finki.busngobackend.domain.entities.Postojka
 import mk.ukim.finki.busngobackend.domain.entities.PostojkaNaLinija
 import mk.ukim.finki.busngobackend.repository.LinijaRepository
 import mk.ukim.finki.busngobackend.repository.PostojkaNaLinijaRepository
@@ -34,4 +35,6 @@ class StationService(
 
         return postojkaNaLinijaRepository.findByLinijaAndPravec(linija, pravec)
     }
+
+    fun getAll(): List<Postojka> = this.postojkaRepository.findAll()
 }

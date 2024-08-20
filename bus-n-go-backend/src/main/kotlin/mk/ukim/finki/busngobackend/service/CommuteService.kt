@@ -1,8 +1,10 @@
 package mk.ukim.finki.busngobackend.service
 
+import jakarta.transaction.Transactional
 import mk.ukim.finki.busngobackend.api.requests.StartCommuteRequest
 import mk.ukim.finki.busngobackend.api.responses.CommuteResponse
 import mk.ukim.finki.busngobackend.domain.entities.Vozenje
+import mk.ukim.finki.busngobackend.domain.enums.BiletEnum
 import mk.ukim.finki.busngobackend.domain.enums.RoleEnum
 import mk.ukim.finki.busngobackend.domain.enums.VozenjeStatus
 import mk.ukim.finki.busngobackend.mapper.ClassToDtoMapper
@@ -26,17 +28,27 @@ class CommuteService(
     private val vozenjeRepository: VozenjeRepository,
     private val dtoMapper: ClassToDtoMapper,
 ) {
+    @Transactional
     fun start(request: StartCommuteRequest): CommuteResponse {
         if (!this.authService.hasAuthority(RoleEnum.ROLE_PASSENGER)) throw UnauthorizedAccessException("Unauthorised role")
         val korisnik = this.authService.getAuthenticatedUser()
         val patnik = patnikRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Korisnik")
 
-        val bilet = biletRepository.findByIdAndPatnik(request.ticketId, patnik) ?: throw NotFoundException("Bilet")
+        var bilet = biletRepository.findByIdAndPatnik(request.ticketId, patnik) ?: throw NotFoundException("Bilet")
 
         val instancaNaLinija =
             instancaNaLinijaRepository.findByIdOrNull(request.routeInstanceId) ?: throw NotFoundException("RouteInstanceId")
+        val postojka = postojkaRepository.findByIdOrNull(request.stationId) ?: throw NotFoundException("StationId")
+
         val postojkaNaLinijaStart =
-            postojkaNaLinijaRepository.findByIdOrNull(request.lineStationId) ?: throw NotFoundException("Linija not found")
+            postojkaNaLinijaRepository.findByLinijaAndPostojkaAndPravec(instancaNaLinija.linija, postojka, instancaNaLinija.pravec)
+                ?: throw NotFoundException("Station not found")
+
+        if (bilet.status == BiletEnum.INACTIVE) {
+            bilet.status = BiletEnum.ACTIVE
+            bilet.datumAktivacija = Timestamp.valueOf(LocalDateTime.now())
+            bilet = biletRepository.save(bilet)
+        }
 
         val vozenje =
             Vozenje(

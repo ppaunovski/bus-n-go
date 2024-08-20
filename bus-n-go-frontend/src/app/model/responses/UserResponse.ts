@@ -3,4 +3,5 @@ export interface UserResponse {
   name: string
   address: string
   phoneNumber: string
+  id: number
 }

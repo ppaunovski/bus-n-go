@@ -13,14 +13,19 @@ import {ErrorStateMatcher} from "@angular/material/core";
 import {Router, RouterLink} from "@angular/router";
 import {InputFieldComponent} from "../input-field/input-field.component";
 import {AuthService} from "../../services/auth/auth.service";
+import {AuthRequest} from "../../model/requests/AuthRequest";
+import {tap} from "rxjs";
 @Component({
   standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  email: string | undefined;
-  password: string | undefined;
+
+  form: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
+  })
 
   constructor(
     private router: Router,
@@ -29,34 +34,23 @@ export class LoginComponent {
   }
 
   onSubmit($event: Event) {
-    console.log($event, this.email, this.password)
-    if (this.email && this.password) {
-      console.log('valid')
-      this.service.login({
-        email: this.email,
-        password: this.password,
-      }).subscribe({
+    console.log(this.form.value as AuthRequest)
+      this.service.login(this.form.value as AuthRequest)
+        .pipe(
+          tap(result => {
+            console.log(result)
+            sessionStorage.setItem('jwt', result.token);
+            this.service.refreshAuth$.next(true);
+          })
+        )
+        .subscribe({
         next: result => {
-          console.log(result)
-          this.service.refreshAuth$.next(true);
-          sessionStorage.setItem('jwt', result.token);
           this.router.navigate(['/'])
+        },
+        error: error => {
+          sessionStorage.removeItem('jwt');
         }
       })
-    }
-
-  }
-
-  handleInputChange(key: string, value: string | undefined) {
-    console.log(key, value)
-    switch (key){
-      case 'email':
-        this.email = value;
-        break
-      case 'password':
-        this.password = value;
-        break
-    }
   }
 }
 

@@ -20,7 +20,6 @@ export class InputFieldComponent {
   @Output() onInputChange: EventEmitter<string | undefined> = new EventEmitter();
 
   handleInput(value: string) {
-    console.log(value)
     this.onInputChange.emit(value)
   }
 }

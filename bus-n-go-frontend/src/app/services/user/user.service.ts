@@ -14,4 +14,8 @@ export class UserService {
   getUser(): Observable<UserResponse | undefined> {
     return this._http.get<UserResponse>(`${this._url}`)
   }
+
+  getAllPassengers(): Observable<UserResponse[]> {
+    return this._http.get<UserResponse[]>(`${this._url}/passengers`)
+  }
 }

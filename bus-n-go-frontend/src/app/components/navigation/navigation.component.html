@@ -3,8 +3,9 @@
     <div class="flex gap-4">
       <a [routerLink]="['tickets']">Tickets</a>
       <a [routerLink]="['route-instances', 'start']">Start Route</a>
-      <span>Tickets</span>
-      <span>Tickets</span>
+      <a [routerLink]="['commutes', 'start']">Commute</a>
+      <a [routerLink]="['controls']">Controls</a>
+      <a [routerLink]="['admin']">Admin Panel</a>
     </div>
     <div>
       @if (user) {

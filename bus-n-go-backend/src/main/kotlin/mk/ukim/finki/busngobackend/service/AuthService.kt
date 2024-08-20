@@ -4,8 +4,7 @@ import mk.ukim.finki.busngobackend.api.requests.AuthRequest
 import mk.ukim.finki.busngobackend.api.requests.RegisterRequest
 import mk.ukim.finki.busngobackend.api.responses.AuthResponse
 import mk.ukim.finki.busngobackend.config.JwtService
-import mk.ukim.finki.busngobackend.domain.entities.Korisnik
-import mk.ukim.finki.busngobackend.domain.entities.KorisnikRole
+import mk.ukim.finki.busngobackend.domain.entities.*
 import mk.ukim.finki.busngobackend.domain.enums.RoleEnum
 import mk.ukim.finki.busngobackend.domain.enums.toId
 import mk.ukim.finki.busngobackend.repository.*
@@ -31,6 +30,8 @@ class AuthService(
     private val instancaNaLinijaRepository: InstancaNaLinijaRepository,
     private val vrabotenRepository: VrabotenRepository,
     private val vozacRepository: VozacRepository,
+    private val kondukterRepository: KondukterRepository,
+    private val patnikRepository: PatnikRepository,
 ) {
     fun getSecurityContext(): SecurityContext = SecurityContextHolder.getContext()
 
@@ -83,7 +84,14 @@ class AuthService(
 
         user.roles = newRoles
 
-        this.korisnikRepository.save(user)
+        val korisnik = this.korisnikRepository.save(user)
+        val patnik =
+            this.patnikRepository.save(
+                Patnik(
+                    id = 0L,
+                    korisnik = korisnik,
+                ),
+            )
 
         return this.authenticate(AuthRequest(user.email, user.lozinka))
     }
@@ -109,6 +117,41 @@ class AuthService(
         val vraboten = this.vrabotenRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Vraboten not found")
         val vozac = this.vozacRepository.findByVraboten(vraboten) ?: throw NotFoundException("Vozac not found")
 
-        return this.instancaNaLinijaRepository.existsByVozacAndEndDateIsNull(vozac.id)
+        return !this.instancaNaLinijaRepository.existsByVozacAndEndDateIsNull(vozac.id)
+    }
+
+    fun getConductor(): Kondukter {
+        if (!this.isAuthenticated() || !this.hasAuthority(RoleEnum.ROLE_CONDUCTOR)) {
+            throw UnauthorizedAccessException("Unauthorized access")
+        }
+
+        val korisnik = this.getAuthenticatedUser()
+        val vraboten = vrabotenRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Korisnik")
+        val kondukter = kondukterRepository.findByVraboten(vraboten) ?: throw NotFoundException("Kondukter")
+
+        return kondukter
+    }
+
+    fun getDriver(): Vozac {
+        if (!this.isAuthenticated() || !this.hasAuthority(RoleEnum.ROLE_DRIVER)) {
+            throw UnauthorizedAccessException("Unauthorized access")
+        }
+
+        val korisnik = this.getAuthenticatedUser()
+        val vraboten = vrabotenRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Korisnik")
+        val vozac = vozacRepository.findByVraboten(vraboten) ?: throw NotFoundException("Vozac")
+
+        return vozac
+    }
+
+    fun getPassenger(): Patnik {
+        if (!this.isAuthenticated() || !this.hasAuthority(RoleEnum.ROLE_PASSENGER)) {
+            throw UnauthorizedAccessException("Unauthorized access")
+        }
+
+        val korisnik = this.getAuthenticatedUser()
+        val patnik = patnikRepository.findByKorisnik(korisnik) ?: throw NotFoundException("Patnik")
+
+        return patnik
     }
 }

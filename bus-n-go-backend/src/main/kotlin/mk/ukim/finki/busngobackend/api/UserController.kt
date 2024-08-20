@@ -13,4 +13,7 @@ class UserController(
 ) {
     @GetMapping()
     fun getAuthenticatedUser(): UserResponse = korisnikService.getAuthenticatedUser()
+
+    @GetMapping("/passengers")
+    fun getAllPassengers() = korisnikService.getAllPassengers()
 }

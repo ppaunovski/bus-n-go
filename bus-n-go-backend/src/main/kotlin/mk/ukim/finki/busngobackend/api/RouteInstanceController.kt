@@ -23,4 +23,12 @@ class RouteInstanceController(
     fun getById(
         @PathVariable id: Long,
     ) = this.routeInstanceService.getById(id)
+
+    @GetMapping("/station/{stationId}")
+    fun getForStation(
+        @PathVariable stationId: Long,
+    ) = routeInstanceService.getForStation(stationId)
+
+    @GetMapping()
+    fun getAll() = routeInstanceService.getAll()
 }

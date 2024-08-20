@@ -176,6 +176,15 @@ create table Postojka_Na_Linija (
 --	*li_id referencira od Linija(li_id)
 --	^p_id referencira od Postojka(p_id)
 
+create table instanca_na_linija_postojka_na_linija (
+                                  id bigserial primary key,
+                                  instanca_na_linija_id bigint not null,
+                                  postojka_na_linija_id bigint not null,
+                                  timestamp timestamp not null,
+                                  foreign key (instanca_na_linija_id) references instanca_na_linija(id),
+                                  foreign key (postojka_na_linija_id) references postojka_na_linija(id)
+);
+
 create table TipBilet (
                           cena real,
                           id bigserial primary key,

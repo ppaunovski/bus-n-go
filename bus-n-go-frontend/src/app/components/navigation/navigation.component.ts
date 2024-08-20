@@ -31,7 +31,11 @@ export class NavigationComponent implements OnInit {
       switchMap(auth => this._userService.getUser())
     ).subscribe({
       next: user => {
+        console.log(user)
         this.user = user
+      },
+      error: err => {
+        this.user = undefined
       }
     })
 

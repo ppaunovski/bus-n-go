@@ -1,19 +1,14 @@
 package mk.ukim.finki.busngobackend.mapper
 
-import mk.ukim.finki.busngobackend.api.responses.CommuteResponse
-import mk.ukim.finki.busngobackend.api.responses.RouteInstanceResponse
-import mk.ukim.finki.busngobackend.api.responses.TicketResponse
-import mk.ukim.finki.busngobackend.api.responses.UserResponse
-import mk.ukim.finki.busngobackend.domain.entities.Bilet
-import mk.ukim.finki.busngobackend.domain.entities.InstancaNaLinija
-import mk.ukim.finki.busngobackend.domain.entities.Korisnik
-import mk.ukim.finki.busngobackend.domain.entities.Vozenje
+import mk.ukim.finki.busngobackend.api.responses.*
+import mk.ukim.finki.busngobackend.domain.entities.*
 import org.springframework.stereotype.Service
 
 @Service
 class ClassToDtoMapper {
     fun toUserResponse(user: Korisnik): UserResponse =
         UserResponse(
+            id = user.id,
             email = user.email,
             phoneNumber = user.telefon,
             address = user.adresa,
@@ -47,7 +42,44 @@ class ClassToDtoMapper {
             startDate = it.startDate.toLocalDateTime(),
             commuter = this.toUserResponse(it.patnik.korisnik),
             stationStart = it.postojkaNaLinijaStart,
-            ticket = it.bilet,
+            ticket = this.toTicketResponse(it.bilet),
             id = it.id,
+        )
+
+    fun toControlResponse(kontrola: Kontrola) =
+        ControlResponse(
+            id = kontrola.id,
+            instancaNaLinija = this.toRouteInstanceResponse(kontrola.instancaNaLinija),
+            kondukter = this.toUserResponse(kontrola.kondukter.vraboten.korisnik),
+            dateCreated = kontrola.dateCreated,
+        )
+
+    fun toFineResponse(
+        kazna: Kazna,
+        kzr: KaznaZaRegistriran?,
+        kzn: KaznaZaNeregistriran?,
+    ) = FineResponse(
+        dokument = kazna.dokument,
+        kontrola = this.toControlResponse(kazna.kontrola),
+        plateno = kazna.plateno,
+        iznos = kazna.iznos,
+        id = kazna.id,
+        kondukter = this.toUserResponse(kazna.kondukter.vraboten.korisnik),
+        datePayed = kazna.datePayed,
+        dateCreated = kazna.dateCreated,
+        adresa = kzn?.adresa,
+        patnik = kzr?.patnik?.let { this.toUserResponse(it.korisnik) },
+        ime = kzn?.ime,
+        telefon = kzn?.telefon,
+    )
+
+    fun toAdminUsersResponse(user: Korisnik): AdminUsersResponse =
+        AdminUsersResponse(
+            id = user.id,
+            email = user.email,
+            phoneNumber = user.telefon,
+            address = user.adresa,
+            name = user.ime,
+            roles = user.roles!!.map { it.role!!.name },
         )
 }

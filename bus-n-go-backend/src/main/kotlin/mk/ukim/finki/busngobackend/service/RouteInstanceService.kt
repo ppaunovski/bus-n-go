@@ -4,10 +4,12 @@ import mk.ukim.finki.busngobackend.api.requests.StartRouteInstanceRequest
 import mk.ukim.finki.busngobackend.api.responses.RouteInstanceResponse
 import mk.ukim.finki.busngobackend.domain.entities.InstancaNaLinija
 import mk.ukim.finki.busngobackend.domain.enums.RoleEnum
+import mk.ukim.finki.busngobackend.events.StartRouteEvent
 import mk.ukim.finki.busngobackend.mapper.ClassToDtoMapper
 import mk.ukim.finki.busngobackend.repository.*
 import mk.ukim.finki.busngobackend.service.exceptions.NotFoundException
 import mk.ukim.finki.busngobackend.service.exceptions.UnauthorizedAccessException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -24,6 +26,8 @@ class RouteInstanceService(
     private val vrabotenRepository: VrabotenRepository,
     private val vozacRepository: VozacRepository,
     private val dtoMapper: ClassToDtoMapper,
+    private val publisher: ApplicationEventPublisher,
+    private val postojkaRepository: PostojkaRepository,
 ) {
     fun start(request: StartRouteInstanceRequest): RouteInstanceResponse {
         if (!authService.isAuthenticated() || !authService.hasAuthority(RoleEnum.ROLE_DRIVER)) {
@@ -35,7 +39,8 @@ class RouteInstanceService(
         val vozac = vozacRepository.findByVraboten(vraboten) ?: throw NotFoundException("Vraboten")
 
         val linija = linijaRepository.findByIdOrNull(request.lineId) ?: throw NotFoundException("Line not found")
-        val pravec = pravecRepository.findByIdOrNull(request.directionId) ?: throw NotFoundException("Direction not found")
+        val pravec =
+            pravecRepository.findByIdOrNull(request.directionId) ?: throw NotFoundException("Direction not found")
 
         if (!linijaPravecRepository.existsByLinijaAndPravec(linija, pravec)) {
             throw NotFoundException("Line does not has the specified direction")
@@ -54,7 +59,12 @@ class RouteInstanceService(
                 endDate = null,
             )
 
-        return instancaNaLinijaRepository.save(instanca).let { dtoMapper.toRouteInstanceResponse(it) }
+        return instancaNaLinijaRepository
+            .save(instanca)
+            .let {
+                publisher.publishEvent(StartRouteEvent(it))
+                dtoMapper.toRouteInstanceResponse(it)
+            }
     }
 
     fun findById(id: Long): InstancaNaLinija = instancaNaLinijaRepository.findByIdOrNull(id) ?: throw NotFoundException("id not found")
@@ -72,4 +82,15 @@ class RouteInstanceService(
         if (korisnik.id != ri.vozac.vraboten.korisnik.id) throw UnauthorizedAccessException("Unauthorized access")
         return dtoMapper.toRouteInstanceResponse(this.findById(id))
     }
+
+    fun getForStation(stationId: Long): List<RouteInstanceResponse> {
+        val station = postojkaRepository.findByIdOrNull(stationId) ?: throw NotFoundException("Station not found")
+        // find all route instances heading to the given station
+        val routeInstanceIds = instancaNaLinijaRepository.findIncomingRouteInstancesForStation(station.id)
+        val routeInstances = instancaNaLinijaRepository.findAllById(routeInstanceIds)
+        return routeInstances.map { dtoMapper.toRouteInstanceResponse(it) }
+    }
+
+    fun getAll(): List<RouteInstanceResponse> =
+        instancaNaLinijaRepository.findAllByEndDateIsNull().map { dtoMapper.toRouteInstanceResponse(it) }
 }
