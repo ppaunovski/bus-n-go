@@ -1,0 +1,17 @@
+<div>
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title> {{ticket?.tip?.ime}}</mat-card-title>
+      <mat-card-subtitle>Duration: {{ticket?.tip?.trajnost}}</mat-card-subtitle>
+      <mat-card-subtitle>Date of buying: {{ticket?.datumKupuvanje}}</mat-card-subtitle>
+      <mat-card-subtitle>Date of activation: {{ticket?.datumAktivacija}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+      <div class="w-full flex justify-between">
+        <button mat-button>Learn More</button>
+        <button mat-flat-button [disabled]="this.ticket?.datumAktivacija" (click)="activateTicket()">Activate</button>
+
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,51 @@
+<div class="w-full h-full flex flex-col justify-center items-center">
+
+  <div>
+    <div>
+      <mat-form-field (click)="onClick()" [appearance]="'outline'">
+        <mat-label>Select instance</mat-label>
+        <mat-select (selectionChange)="onInstancePick($event)">
+          @for (instance of instances; track instance.id) {
+            <mat-option [value]="instance.id">{{ instance.line.ime }} -> {{instance.direction.pravec}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+      <button mat-flat-button (click)="onStart()">
+        Start new
+      </button>
+
+
+  </div>
+
+
+  <div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">Link</th>
+        <th scope="col" class="px-6 py-3">Conductor</th>
+        <th scope="col" class="px-6 py-3">Route Instance</th>
+        <th scope="col" class="px-6 py-3">Date Created</th>
+
+      </tr>
+      </thead>
+      <tbody>
+
+        @for (control of controls; track control.id) {
+          <tr>
+            <td class="px-6 py-4" [routerLink]="[control.id]">
+              <a class="text-blue-700 cursor-pointer">Go to control</a>
+            </td>
+            <td class="px-6 py-4">{{control.kondukter.name}}</td>
+            <td class="px-6 py-4">{{control.instancaNaLinija.line.ime}} - {{control.instancaNaLinija.direction.pravec}} - {{control.instancaNaLinija.driver.name}}</td>
+            <td class="px-6 py-4">{{control.dateCreated}}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+
+</div>

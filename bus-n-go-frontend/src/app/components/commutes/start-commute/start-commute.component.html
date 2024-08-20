@@ -1,0 +1,41 @@
+<div class="w-full h-full flex justify-center items-center">
+
+  <div class="flex flex-col">
+
+
+      <form class="flex flex-col">
+
+        <mat-form-field [appearance]="'outline'">
+          <mat-label>Select ticket</mat-label>
+          <mat-select (selectionChange)="onTicketSelect($event)">
+            @for (t of tickets; track t.id) {
+              <mat-option [value]="t.id">{{ t.tip.ime }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field [appearance]="'outline'">
+          <mat-label>Select station</mat-label>
+          <mat-select (selectionChange)="onStationPick($event)">
+            @for (s of stations; track s.id) {
+              <mat-option [value]="s.id">{{ s.ime }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field [appearance]="'outline'">
+          <mat-label>Select route</mat-label>
+          <mat-select (selectionChange)="onInstancePick($event)">
+            @for (i of routeInstances; track i.id) {
+              <mat-option [value]="i.id">{{ i.line.ime + ' -> ' + i.direction.pravec }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button (click)="startCommute()">Start commute</button>
+
+      </form>
+
+  </div>
+
+</div>

@@ -1,0 +1,14 @@
+<div class="flex justify-center items-center w-full h-full">
+
+  {{this.routeInstance?.id}}
+  {{routeInstance?.driver?.email}}
+  <div>
+    {{routeInstance?.end}}
+  </div>
+  <div>
+    <button [disabled]="routeInstance?.end" mat-flat-button (click)="endInstance()">
+      End instance
+    </button>
+  </div>
+
+</div>
