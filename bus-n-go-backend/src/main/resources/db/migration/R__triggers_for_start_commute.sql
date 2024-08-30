@@ -1,3 +1,5 @@
+set search_path = project;
+
 create or replace function check_expiry_date() returns trigger
 as
     $$

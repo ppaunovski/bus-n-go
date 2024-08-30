@@ -1,7 +1,6 @@
--- set search_path = project_new;
+set search_path = project;
 
 drop table if exists Se_simnuva_na;
---drop table if exists Se_validira;
 drop table if exists KaznaZaRegistriran;
 drop table if exists KaznaZaNeregistriran;
 drop table if exists Kazna;
@@ -15,7 +14,6 @@ drop table if exists Mesto;
 drop table if exists InstancaNaLinija;
 drop table if exists Linija;
 drop table if exists Avtobus;
---drop table if exists Dokument;
 drop table if exists Kondukter;
 drop table if exists Vozac;
 drop table if exists Vraboten;
@@ -23,21 +21,6 @@ drop table if exists Patnik;
 drop table if exists KorisnikRole;
 drop table if exists Korisnik;
 drop table if exists Role;
-
-
---drop domain if exists string_dolg;
---drop domain if exists string_kratok;
-
---drop schema if exists project_new;
-
---create schema project_new;
-
---set search_path = project_new;
-
---create domain string_dolg AS character varying(4000);
---create domain string_kratok AS character varying(500);
-
-
 
 create table Korisnik(
                          is_admin boolean,
@@ -96,15 +79,6 @@ create table Kondukter(
 );
 --	*k_id referencira od Korisnik(k_id)
 
---create table Dokument(
---	d_broj_na_dokumnet string_kratok primary key,
---	d_datum_na_izdavanje date not null,
---	d_datum_ist date not null,
---	d_koj_go_izdal string_kratok not null,
---	k_id bigint not null,
---	constraint dokument_za_covek foreign key (k_id) references Korisnik(k_id)
---);
-
 create table Avtobus(
                         broj_sedishta smallint,
                         id bigserial primary key,
@@ -146,13 +120,6 @@ create table Instanca_Na_Linija (
 --	*k_id referencira od Korisnik(k_id)
 --	^a_registracija referncira od Avtobus(a_registracija)
 --	#li_id referencira od Linija(li_id)
-
---create table Mesto(
---	m_id serial primary key,
---	m_grad string_kratok not null,
---	m_opstina string_kratok not null,
---	m_ulica string_kratok not null
---);
 
 create table Postojka (
                           id serial primary key,
@@ -261,19 +228,6 @@ create table kazna_za_neregistriran(
                                      telefon character varying(255),
                                      foreign key (kazna_id) references kazna (id)
 );
-
-
-
---create table Se_validira (
---    vozenje_id bigint not null,
---    b_id bigint not null,
---    primary key (vozenje_id, b_id),
---    foreign key (vozenje_id) references Vozenje(vozenje_id),
---    foreign key (b_id) references Bilet(b_id)
---);
-----	* vozenje_id referencira od Vozenje(vozenje_id)
-----	^ b_id referencira od Bilet(b_id)
-
 
 create table se_simnuva_na (
                                id bigserial primary key,

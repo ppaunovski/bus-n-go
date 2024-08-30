@@ -1,3 +1,5 @@
+set search_path = project;
+
 -- Insert stops from Skopje to Ohrid
 INSERT INTO Postojka (lat, lon, ime, opis) VALUES
                                                (41.9981, 21.4254, 'Skopje', 'Capital city of North Macedonia'),

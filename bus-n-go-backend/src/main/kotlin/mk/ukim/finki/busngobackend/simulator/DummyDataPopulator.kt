@@ -23,7 +23,56 @@ class DummyDataPopulator(
     private val patnikRepository: PatnikRepository,
     private val biletRepository: BiletRepository,
     private val tipbiletRepository: TipbiletRepository,
+    private val kaznaRepository: KaznaRepository,
+    private val kontrolaRepository: KontrolaRepository,
+    private val kondukterRepository: KondukterRepository,
+    private val kaznaZaNeregistriranRepository: KaznaZaNeregistriranRepository,
 ) {
+    fun populateFines() {
+        val routeInstances = instancaNaLinijaRepository.findAll()
+        val kondukters = kondukterRepository.findAll()
+
+        routeInstances.forEach { inl ->
+            run {
+                val kondukter = kondukters.random()
+                val kontrola =
+                    kontrolaRepository.save(
+                        Kontrola(
+                            id = 0L,
+                            instancaNaLinija = inl,
+                            dateCreated = getRandomTimestamp(inl.startDate.toLocalDateTime(), inl.endDate!!.toLocalDateTime()),
+                            kondukter = kondukter,
+                        ),
+                    )
+                for (i in 0..5) {
+                    val kazna =
+                        kaznaRepository.save(
+                            Kazna(
+                                id = 0L,
+                                iznos = 1000.0,
+                                dokument = "DOC " + LocalDateTime.now().toString(),
+                                kontrola = kontrola,
+                                dateCreated = getRandomTimestamp(kontrola.dateCreated.toLocalDateTime(), inl.endDate!!.toLocalDateTime()),
+                                datePayed = getRandomTimestamp(kontrola.dateCreated.toLocalDateTime(), inl.endDate!!.toLocalDateTime()),
+                                kondukter = kondukter,
+                                plateno = true,
+                            ),
+                        )
+
+                    kaznaZaNeregistriranRepository.save(
+                        KaznaZaNeregistriran(
+                            id = 0L,
+                            kazna = kazna,
+                            ime = "Test Ime" + LocalDateTime.now().toString(),
+                            adresa = "Test Adres" + LocalDateTime.now().toString(),
+                            telefon = "+38975123456",
+                        ),
+                    )
+                }
+            }
+        }
+    }
+
     fun populateCommutes() {
         val routeInstances = instancaNaLinijaRepository.findAll()
         routeInstances.forEach { instancaNaLinija ->

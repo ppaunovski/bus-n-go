@@ -13,5 +13,6 @@ class RefreshMaterializedViews(
         materializedViewService.refreshAverageTimeDiffs()
         materializedViewService.refreshCommutesByHour()
         materializedViewService.refreshFinesPerLine()
+        materializedViewService.refreshTotalIncome()
     }
 }

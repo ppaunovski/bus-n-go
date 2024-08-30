@@ -10,19 +10,25 @@ class MaterializedViewService(
 ) {
     @Transactional
     fun refreshAverageTimeDiffs() {
-        val sql = "REFRESH MATERIALIZED VIEW CONCURRENTLY avg_time_diffs;"
+        val sql = "REFRESH MATERIALIZED VIEW CONCURRENTLY project.avg_time_diffs;"
         jdbcTemplate.execute(sql)
     }
 
     @Transactional
     fun refreshCommutesByHour() {
-        val sql = "refresh materialized view concurrently most_busy_part_of_the_day;"
+        val sql = "refresh materialized view concurrently project.most_busy_part_of_the_day;"
         jdbcTemplate.execute(sql)
     }
 
     @Transactional
     fun refreshFinesPerLine() {
-        val sql = "refresh materialized view concurrently kazna_po_linija;"
+        val sql = "refresh materialized view concurrently project.kazna_po_linija;"
+        jdbcTemplate.execute(sql)
+    }
+
+    @Transactional
+    fun refreshTotalIncome() {
+        val sql = "refresh materialized view concurrently project.total_income;"
         jdbcTemplate.execute(sql)
     }
 }

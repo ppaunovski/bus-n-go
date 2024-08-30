@@ -8,11 +8,12 @@ import {PieChartComponent} from "../../charts/pie-chart/pie-chart.component";
 import {map, Observable} from "rxjs";
 import {PieChartValues} from "../../../model/PieChartValues";
 import {CommutesByHour, LineChartComponent} from "../../charts/line-chart.component";
+import {IncomeChartComponent, IncomeData} from "../../charts/stacked-bar-chart.component";
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [MatTableModule, MatCheckboxModule, MatButton, PieChartComponent, LineChartComponent],
+  imports: [MatTableModule, MatCheckboxModule, MatButton, PieChartComponent, LineChartComponent, IncomeChartComponent],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.css'
 })
@@ -79,5 +80,9 @@ export class AdminPanelComponent implements OnInit {
 
   getCommutesByHour(): Observable<CommutesByHour[]> {
     return this.adminService.getCommutesByHour();
+  }
+
+  getTotalIncome(): Observable<IncomeData[]> {
+    return this.adminService.getTotalIncome()
   }
 }

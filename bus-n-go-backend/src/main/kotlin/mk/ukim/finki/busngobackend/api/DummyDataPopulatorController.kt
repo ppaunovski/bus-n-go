@@ -15,4 +15,7 @@ class DummyDataPopulatorController(
 
     @GetMapping("/commutes")
     fun populateCommutes() = dummyDataPopulator.populateCommutes()
+
+    @GetMapping("/fines")
+    fun populateFines() = dummyDataPopulator.populateFines()
 }

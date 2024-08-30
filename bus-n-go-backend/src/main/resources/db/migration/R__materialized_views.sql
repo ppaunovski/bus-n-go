@@ -1,3 +1,5 @@
+set search_path = project;
+
 drop materialized view if exists avg_time_diffs;
 CREATE MATERIALIZED VIEW avg_time_diffs AS
 WITH ordered_instanca AS (SELECT ilpl.instanca_na_linija_id,
@@ -31,9 +33,6 @@ ORDER BY start_station_id,
          end_station_id;
 
 create unique index avg_time_diffs_index on avg_time_diffs (id);
-
-CREATE INDEX idx_avg_time_diffs_start_station ON avg_time_diffs (start_station_id);
-CREATE INDEX idx_avg_time_diffs_end_station ON avg_time_diffs (end_station_id);
 
 drop materialized view if exists kazna_po_linija;
 create materialized view kazna_po_linija as
@@ -153,3 +152,5 @@ FROM
         FULL OUTER JOIN bilet_sum b ON k.year = b.year
 ORDER BY
     year desc;
+
+create unique index index_total_income on total_income(id);

@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {AdminUsersResponse} from "../../model/responses/AdminUsersResponse";
 import {FinesPerLine} from "../../model/FinesPerLine";
 import {CommutesByHour} from "../../components/charts/line-chart.component";
+import {IncomeData} from "../../components/charts/stacked-bar-chart.component";
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,9 @@ export class AdminService {
 
   getCommutesByHour() {
     return this.http.get<CommutesByHour[]>(`${this.url}/commutes-by-hour`);
+  }
+
+  getTotalIncome() {
+    return this.http.get<IncomeData[]>(`${this.url}/total-income`);
   }
 }

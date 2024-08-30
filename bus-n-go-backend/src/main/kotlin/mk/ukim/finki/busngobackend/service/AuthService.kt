@@ -55,7 +55,7 @@ class AuthService(
             throw RuntimeException("Passwords do not match")
         }
 
-        val roles = this.roleRepository.findAllByNameLikeIgnoreCase("passenger")
+        val roles = this.roleRepository.findAllByNameLikeIgnoreCase("role_passenger")
 
         val user =
             this.korisnikRepository.save(
@@ -63,7 +63,7 @@ class AuthService(
                     email = registerRequest.email,
                     lozinka = registerRequest.password,
                     ime = registerRequest.name,
-                    id = 4,
+                    id = 0L,
                     adresa = registerRequest.address,
                     admin = false,
                     telefon = registerRequest.phoneNumber,

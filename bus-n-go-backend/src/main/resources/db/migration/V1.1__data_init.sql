@@ -1,3 +1,5 @@
+set search_path = project;
+
 INSERT INTO Korisnik (is_admin, adresa, email, ime, lozinka, telefon) VALUES
                                                                           (true, 'Bulevar Partizanski Odredi 45, Skopje', 'admin@example.com', 'Nikola Stojanovski', 'admin_password', '070123456'),
                                                                           (false, 'Ulica Makedonija 12, Skopje', 'user1@example.com', 'Elena Petrovska', 'user1_password', '071234567'),
